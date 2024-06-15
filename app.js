@@ -4,7 +4,7 @@ const cheerio = require('cheerio');
 const cors = require('cors');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -32,13 +32,9 @@ app.post('/fetch-metadata', async (req, res) => {
       url: $('meta[property="og:url"]').attr('content') || url,
     };
 
-    res.json(metadata);
+    res.status(200).json({ isMetaDataFound: true, metadata });
   } catch (error) {
-    console.error('Error fetching metadata:', error);
-    if (error instanceof axios.AxiosError)
-      res.status(500).json({ error: 'failed to get metadata' });
-    else
-      res.status(500).json({ error: 'Failed to fetch metadata' });
+    res.status(500).json({ error: 'Failed to fetch metadata', isMetaDataFound: false });
   }
 });
 
